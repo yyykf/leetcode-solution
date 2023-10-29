@@ -25,6 +25,7 @@ public class LruCache<T> {
     private static final int DEFAULT_CAPACITY = 1 << 4;
 
     private LruCacheNode<T> head;
+    private LruCacheNode<T> tail;
     /** current size of node */
     private int size;
     /** capacity of cache */
@@ -102,6 +103,10 @@ public class LruCache<T> {
             if (current.next != null) {
                 current.next.prev = current.prev;
             }
+            // 调整尾结点
+            if (tail == current){
+                tail = current.prev;
+            }
             this.insertToHead(current);
         } else {
             // 未命中缓存
@@ -111,18 +116,13 @@ public class LruCache<T> {
                 size++;
             } else {
                 // 缓存已满，删除尾结点，插入链表头
-                current = head;
-
-                // 找尾结点的前一个结点
-                while (current.next != null) {
-                    current = current.next;
-                }
-
-                if (current.prev != null) {
-                    current.prev.next = null;
-                } else {
-                    // 缓存已满，并且尾结点的前驱结点为空，那么说明只有一个元素，尾结点就是 head
+                if (tail.prev == null) {
+                    // 尾结点的前驱结点为空，那么说明只有一个元素，尾结点就是 head
+                    tail = null;
                     head = null;
+                } else {
+                    tail.prev.next = null;
+                    tail = tail.prev;
                 }
 
                 this.insertToHead(new LruCacheNode<>(data));
@@ -135,6 +135,9 @@ public class LruCache<T> {
 
         if (head != null) {
             head.prev = node;
+        }
+        if (tail == null) {
+            tail = node;
         }
 
         node.prev = null;
