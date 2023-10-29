@@ -12,6 +12,7 @@ public class LruCache<T> {
 
     public static void main(String[] args) {
         LruCache<Integer> cache = new LruCache<>(3);
+        // LruCache<Integer> cache = new LruCache<>(1);
 
         Random random = new Random();
         for (int i = 0; i < 10; i++) {
@@ -81,27 +82,27 @@ public class LruCache<T> {
 
         // 查找目标结点和前驱结点
         LruCacheNode<T> current = head;
-        LruCacheNode<T> prev = null;
 
         do {
             if (Objects.equals(current.data, data)) {
                 break;
             }
 
-            prev = current;
             current = current.next;
         } while (current != null);
 
         if (current != null) {
             // 命中缓存，调整位置
-            if (prev == null) {
-                // prev 为空代表元素已经在链表头了
+            if (current.prev == null) {
+                // 前驱结点为空代表元素已经在链表头了
                 return;
             }
 
-            prev.next = current.next;
-            current.next = head;
-            head = current;
+            current.prev.next = current.next;
+            if (current.next != null) {
+                current.next.prev = current.prev;
+            }
+            this.insertToHead(current);
         } else {
             // 未命中缓存
             if (size < capacity) {
@@ -111,16 +112,14 @@ public class LruCache<T> {
             } else {
                 // 缓存已满，删除尾结点，插入链表头
                 current = head;
-                prev = null;
 
                 // 找尾结点的前一个结点
                 while (current.next != null) {
-                    prev = current;
                     current = current.next;
                 }
 
-                if (prev != null) {
-                    prev.next = null;
+                if (current.prev != null) {
+                    current.prev.next = null;
                 } else {
                     // 缓存已满，并且尾结点的前驱结点为空，那么说明只有一个元素，尾结点就是 head
                     head = null;
@@ -134,6 +133,11 @@ public class LruCache<T> {
     private void insertToHead(LruCacheNode<T> node) {
         Objects.requireNonNull(node, "node is null");
 
+        if (head != null) {
+            head.prev = node;
+        }
+
+        node.prev = null;
         node.next = head;
         head = node;
     }
@@ -143,6 +147,7 @@ public class LruCache<T> {
 
         private T data;
         private LruCacheNode<T> next;
+        private LruCacheNode<T> prev;
 
         public LruCacheNode(T data) {
             this.data = data;
