@@ -14,18 +14,20 @@ public class _150_EvaluateReversePolishNotation {
 
         // Output: 9
         String[] tokens1 = {"2", "1", "+", "3", "*"};
-        System.out.println("Output 1: " + evaluator.evalRPN(tokens1));
+        System.out.println("Output 1: " + evaluator.evalRPN0(tokens1));
+        System.out.println("Output 1: " + evaluator.evalRPN1(tokens1));
 
         // Output: 6
         String[] tokens2 = {"4", "13", "5", "/", "+"};
-        System.out.println("Output 2: " + evaluator.evalRPN(tokens2));
+        System.out.println("Output 2: " + evaluator.evalRPN1(tokens2));
 
         // Output: 22
         String[] tokens3 = {"10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"};
-        System.out.println("Output 3: " + evaluator.evalRPN(tokens3));
+        System.out.println("Output 3: " + evaluator.evalRPN1(tokens3));
 
     }
-    public int evalRPN(String[] tokens) {
+
+    private int evalRPN0(String[] tokens) {
 
         Stack<Integer> numStack = new Stack<>();
 
@@ -55,5 +57,23 @@ public class _150_EvaluateReversePolishNotation {
             }
         }
         return numStack.peek();
+    }
+
+    private int evalRPN1(String[] tokens) {
+        int[] numsArray = new int[tokens.length / 2 + 1];
+
+        int index = 0;
+
+        for (String token : tokens) {
+            switch (token) {
+                case "+" -> numsArray[index - 2] += numsArray[--index];
+                case "-" -> numsArray[index - 2] -= numsArray[--index];
+                case "*" -> numsArray[index - 2] *= numsArray[--index];
+                case "/" -> numsArray[index - 2] /= numsArray[--index];
+                default -> numsArray[index++] = Integer.parseInt(token);
+            }
+        }
+
+        return numsArray[0];
     }
 }
