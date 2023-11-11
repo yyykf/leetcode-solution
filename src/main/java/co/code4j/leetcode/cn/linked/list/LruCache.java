@@ -1,4 +1,4 @@
-package co.code4j.leetcode.cn;
+package co.code4j.leetcode.cn.linked.list;
 
 import java.util.*;
 import lombok.*;
@@ -11,7 +11,7 @@ import lombok.*;
 public class LruCache<T> {
 
     public static void main(String[] args) {
-        LruCache<Integer> cache = new LruCache<>(3);
+        LruCache<Integer> cache = new LruCache<>(2);
         // LruCache<Integer> cache = new LruCache<>(1);
 
         Random random = new Random();

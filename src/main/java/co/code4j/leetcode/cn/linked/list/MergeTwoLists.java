@@ -1,4 +1,6 @@
-package co.code4j.leetcode.cn;
+package co.code4j.leetcode.cn.linked.list;
+
+import co.code4j.leetcode.cn.common.ListNode;
 
 /**
  * 21 - MergeTwoLists
@@ -61,22 +63,5 @@ public class MergeTwoLists {
         cur.next = list1 != null ? list1 : list2;
 
         return dummy.next;
-    }
-
-    public static class ListNode {
-        int val;
-        ListNode next;
-
-        ListNode() {
-        }
-
-        ListNode(int val) {
-            this.val = val;
-        }
-
-        ListNode(int val, ListNode next) {
-            this.val = val;
-            this.next = next;
-        }
     }
 }
