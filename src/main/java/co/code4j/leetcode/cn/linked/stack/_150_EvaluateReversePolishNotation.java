@@ -1,6 +1,7 @@
 package co.code4j.leetcode.cn.linked.stack;
 
 import java.util.*;
+import java.util.function.BinaryOperator;
 
 /**
  * @Description
@@ -16,14 +17,19 @@ public class _150_EvaluateReversePolishNotation {
         String[] tokens1 = {"2", "1", "+", "3", "*"};
         System.out.println("Output 1: " + evaluator.evalRPN0(tokens1));
         System.out.println("Output 1: " + evaluator.evalRPN1(tokens1));
+        System.out.println("Output 1: " + evaluator.evalRPN2(tokens1));
 
         // Output: 6
         String[] tokens2 = {"4", "13", "5", "/", "+"};
+        System.out.println("Output 2: " + evaluator.evalRPN0(tokens2));
         System.out.println("Output 2: " + evaluator.evalRPN1(tokens2));
+        System.out.println("Output 2: " + evaluator.evalRPN2(tokens2));
 
         // Output: 22
         String[] tokens3 = {"10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"};
+        System.out.println("Output 3: " + evaluator.evalRPN0(tokens3));
         System.out.println("Output 3: " + evaluator.evalRPN1(tokens3));
+        System.out.println("Output 3: " + evaluator.evalRPN2(tokens3));
 
     }
 
@@ -72,6 +78,31 @@ public class _150_EvaluateReversePolishNotation {
                 case "/" -> numsArray[index - 2] /= numsArray[--index];
                 default -> numsArray[index++] = Integer.parseInt(token);
             }
+        }
+
+        return numsArray[0];
+    }
+
+    private int evalRPN2(String[] tokens) {
+        Map<String, BinaryOperator<Integer>> opsMap = Map.of(
+                "+", (n1, n2) -> n1 + n2,
+                "-", (n1, n2) -> n1 - n2,
+                "*", (n1, n2) -> n1 * n2,
+                "/", (n1, n2) -> n1 / n2
+        );
+
+        int[] numsArray = new int[tokens.length / 2 + 1];
+
+        int index = 0;
+
+        BinaryOperator<Integer> op;
+        for (String token : tokens) {
+            op = opsMap.get(token);
+            if (op == null) {
+                numsArray[index++] = Integer.parseInt(token);
+                continue;
+            }
+            numsArray[index - 2] = op.apply(numsArray[index - 2], numsArray[--index]);
         }
 
         return numsArray[0];
